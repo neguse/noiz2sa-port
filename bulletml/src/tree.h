@@ -1,4 +1,4 @@
-/// ˆê”Ê“I‚ÈƒcƒŠ[BÄ¶Y‚¾‚Ë
+ï»¿/// ä¸€èˆ¬çš„ãªãƒ„ãƒªãƒ¼ã€‚å†ç”Ÿç”£ã ã­
 
 #ifndef TREE_H_
 #define TREE_H_
@@ -7,65 +7,59 @@
 
 #include <list>
 
-/// ƒcƒŠ[‚ÌƒNƒ‰ƒX
+/// ãƒ„ãƒªãƒ¼ã®ã‚¯ãƒ©ã‚¹
 /**
- * ƒcƒŠ[‚Á‚Ä‚Ì‚ÍƒRƒ“ƒeƒi‚ª‘¶İ‚µ‚È‚¢W‡‘Ì‚Å‚ ‚é‚Æv‚¤B
- * ‚ñ‚ÅAƒm[ƒh‚Á‚Ä‚¢‚¤‘®«‚ğ‘Ñ‚Ñ‚½ƒNƒ‰ƒX‚ÌW‡‚ªƒRƒ“ƒeƒi‚Å‚ ‚é‚ÆB
- * ‚ÅƒCƒ“ƒ^[ƒtƒFƒCƒX‚ÍA
+ * ãƒ„ãƒªãƒ¼ã£ã¦ã®ã¯ã‚³ãƒ³ãƒ†ãƒŠãŒå­˜åœ¨ã—ãªã„é›†åˆä½“ã§ã‚ã‚‹ã¨æ€ã†ã€‚
+ * ã‚“ã§ã€ãƒãƒ¼ãƒ‰ã£ã¦ã„ã†å±æ€§ã‚’å¸¯ã³ãŸã‚¯ãƒ©ã‚¹ã®é›†åˆãŒã‚³ãƒ³ãƒ†ãƒŠã§ã‚ã‚‹ã¨ã€‚
+ * ã§ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ã‚¤ã‚¹ã¯ã€
  * class YourNode : public TreeNode<YourNode>;
- * ‚Á‚Ä‹ï‡‚¢B
- * ƒ|ƒCƒ“ƒ^ŠÇ—‚ğ‘O’ñ‚Æ‚µ‚Ä‚¢‚éB
- * ƒCƒ“ƒXƒ^ƒ“ƒX‚ÌŠÇ—‚Í•’i‚Í‚µ‚È‚¢‚¯‚ÇA
- * setReleaseDuty ‚ğŒÄ‚Î‚ê‚½ƒm[ƒh‚ª”j‰ó‚³‚ê‚é‚ÆA
- * ‚»‚ê‚Ì‘§qˆÈ‰º‚Ì¢‘ã‚Í‘S‚Ä”j‰ó‚³‚ê‚éB
+ * ã£ã¦å…·åˆã„ã€‚
+ * ãƒã‚¤ãƒ³ã‚¿ç®¡ç†ã‚’å‰æã¨ã—ã¦ã„ã‚‹ã€‚
+ * ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç®¡ç†ã¯æ™®æ®µã¯ã—ãªã„ã‘ã©ã€
+ * setReleaseDuty ã‚’å‘¼ã°ã‚ŒãŸãƒãƒ¼ãƒ‰ãŒç ´å£Šã•ã‚Œã‚‹ã¨ã€
+ * ãã‚Œã®æ¯å­ä»¥ä¸‹ã®ä¸–ä»£ã¯å…¨ã¦ç ´å£Šã•ã‚Œã‚‹ã€‚
  */
 template <class C_>
 class TreeNode {
-public:
-    // ‚±‚ê‚ğƒeƒ“ƒvƒŒ[ƒgˆø”‚Å·‚µŠ·‚¦‚¤‚éİŒv‚É‚µ‚½‚¢‚Ì‚¾‚ª
-    typedef std::list<C_*> Children;
-    typedef typename Children::iterator ChildIterator;
-    typedef typename Children::const_iterator ConstChildIterator;
+ public:
+  // ã“ã‚Œã‚’ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå¼•æ•°ã§å·®ã—æ›ãˆã†ã‚‹è¨­è¨ˆã«ã—ãŸã„ã®ã ãŒ
+  typedef std::list<C_*> Children;
+  typedef typename Children::iterator ChildIterator;
+  typedef typename Children::const_iterator ConstChildIterator;
 
-public:
-    DECLSPEC TreeNode() {
-		releaseDuty_ = false;
-    }
-    DECLSPEC virtual ~TreeNode();
+ public:
+  DECLSPEC TreeNode() { releaseDuty_ = false; }
+  DECLSPEC virtual ~TreeNode();
 
-    DECLSPEC void addChild(C_* c) {
-		c->setParent(dynamic_cast<C_*>(this));
-		children_.push_back(c);
-    }
-    DECLSPEC void setReleaseDuty(bool bl) {
-		releaseDuty_ = bl;
-    }
-    DECLSPEC void setParent(C_* c) {
-		parent_ = c;
-    }
+  DECLSPEC void addChild(C_* c) {
+    c->setParent(dynamic_cast<C_*>(this));
+    children_.push_back(c);
+  }
+  DECLSPEC void setReleaseDuty(bool bl) { releaseDuty_ = bl; }
+  DECLSPEC void setParent(C_* c) { parent_ = c; }
 
-    DECLSPEC ChildIterator childBegin() { return children_.begin(); }
-    DECLSPEC ChildIterator childEnd() { return children_.end(); }
-	DECLSPEC size_t childSize() { return children_.size(); }
-    DECLSPEC ConstChildIterator childBegin() const { return children_.begin(); }
-    DECLSPEC ConstChildIterator childEnd() const { return children_.end(); }
-    DECLSPEC C_* getParent() { return parent_; }
+  DECLSPEC ChildIterator childBegin() { return children_.begin(); }
+  DECLSPEC ChildIterator childEnd() { return children_.end(); }
+  DECLSPEC size_t childSize() { return children_.size(); }
+  DECLSPEC ConstChildIterator childBegin() const { return children_.begin(); }
+  DECLSPEC ConstChildIterator childEnd() const { return children_.end(); }
+  DECLSPEC C_* getParent() { return parent_; }
 
-private:
-    Children children_;
-    C_* parent_;
-    bool releaseDuty_;
+ private:
+  Children children_;
+  C_* parent_;
+  bool releaseDuty_;
 };
 
 template <class C_>
 TreeNode<C_>::~TreeNode() {
-    if (releaseDuty_) {
-		ChildIterator ite;
-		for (ite = children_.begin(); ite != children_.end(); ite++) {
-			(*ite)->setReleaseDuty(true);
-			delete *ite;
-		}
+  if (releaseDuty_) {
+    ChildIterator ite;
+    for (ite = children_.begin(); ite != children_.end(); ite++) {
+      (*ite)->setReleaseDuty(true);
+      delete *ite;
     }
+  }
 }
 
-#endif // ! TREE_H_
+#endif  // ! TREE_H_

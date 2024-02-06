@@ -1,6 +1,6 @@
-/// BulletMLƒcƒŠ[B
+ï»¿/// BulletMLãƒ„ãƒªãƒ¼ã€‚
 /**
- * BulletML ‚É“Á‰»‚µ‚Ä‚¢‚Ä”ñí‚É‚¢‚ñ‚¿‚«‚­‚³‚¢‚Ì‚ª“Á’¥B
+ * BulletML ã«ç‰¹åŒ–ã—ã¦ã„ã¦éå¸¸ã«ã„ã‚“ã¡ããã•ã„ã®ãŒç‰¹å¾´ã€‚
  */
 
 #ifndef BULLETMLTREE_H_
@@ -17,73 +17,90 @@
 #include "bulletmlcommon.h"
 
 class BulletMLNode : public TreeNode<BulletMLNode> {
-public:
-	typedef Formula<double> Number;
-	typedef enum { none, aim, absolute, relative, sequence, typeSize } Type;
-	typedef enum { bullet, action, fire, changeDirection, changeSpeed, accel,
-				   wait, repeat, bulletRef, actionRef, fireRef, vanish,
-				   horizontal, vertical, term, times, direction, speed, param,
-				   bulletml, nameSize } Name;
+ public:
+  typedef Formula<double> Number;
+  typedef enum { none, aim, absolute, relative, sequence, typeSize } Type;
+  typedef enum {
+    bullet,
+    action,
+    fire,
+    changeDirection,
+    changeSpeed,
+    accel,
+    wait,
+    repeat,
+    bulletRef,
+    actionRef,
+    fireRef,
+    vanish,
+    horizontal,
+    vertical,
+    term,
+    times,
+    direction,
+    speed,
+    param,
+    bulletml,
+    nameSize
+  } Name;
 
-private:
-	static Type string2type(const std::string& str);
-	static Name string2name(const std::string& str);
-	static std::string name2string[nameSize];
+ private:
+  static Type string2type(const std::string& str);
+  static Name string2name(const std::string& str);
+  static std::string name2string[nameSize];
 
-public:
-    typedef TreeNode<BulletMLNode>::Children Children;
-    typedef TreeNode<BulletMLNode>::ChildIterator ChildIterator;
+ public:
+  typedef TreeNode<BulletMLNode>::Children Children;
+  typedef TreeNode<BulletMLNode>::ChildIterator ChildIterator;
 
-public:
-	DECLSPEC explicit BulletMLNode(const std::string& name);
-    DECLSPEC virtual ~BulletMLNode();
+ public:
+  DECLSPEC explicit BulletMLNode(const std::string& name);
+  DECLSPEC virtual ~BulletMLNode();
 
-    DECLSPEC Name getName() const { return name_; }
+  DECLSPEC Name getName() const { return name_; }
 
-    DECLSPEC void setValue(const std::string& val);
-    DECLSPEC double getValue() const { return val_->value(); }
+  DECLSPEC void setValue(const std::string& val);
+  DECLSPEC double getValue() const { return val_->value(); }
 
-	DECLSPEC void setType(const std::string& type) { type_ = string2type(type); }
-	DECLSPEC Type getType() const { return type_; }
+  DECLSPEC void setType(const std::string& type) { type_ = string2type(type); }
+  DECLSPEC Type getType() const { return type_; }
 
-	DECLSPEC void setRefID(int id) { refID_ = id; }
-	DECLSPEC int getRefID() const { return refID_; }
+  DECLSPEC void setRefID(int id) { refID_ = id; }
+  DECLSPEC int getRefID() const { return refID_; }
 
-    DECLSPEC BulletMLNode* getChild(Name name);
-/*
+  DECLSPEC BulletMLNode* getChild(Name name);
+  /*
 
-    template <class OutIte_>
-    void getAllChildren(Name name, OutIte_ outIte);
-*/
-    DECLSPEC void getAllChildrenVec(Name name, std::vector<BulletMLNode*>& outvec);
+      template <class OutIte_>
+      void getAllChildren(Name name, OutIte_ outIte);
+  */
+  DECLSPEC void getAllChildrenVec(Name name,
+                                  std::vector<BulletMLNode*>& outvec);
 
+  /// å­å­«ã®ä¸­ã«æŒ‡å®šã—ãŸåå‰ã«ä¸€è‡´ã™ã‚‹ã‚‚ã®ãŒã‚ã‚‹ã‹ã©ã†ã‹
+  DECLSPEC bool findNode(Name name) const;
 
+  DECLSPEC BulletMLNode* next();
 
-    /// q‘·‚Ì’†‚Éw’è‚µ‚½–¼‘O‚Éˆê’v‚·‚é‚à‚Ì‚ª‚ ‚é‚©‚Ç‚¤‚©
-    DECLSPEC bool findNode(Name name) const;
+  virtual void dump();
 
-    DECLSPEC BulletMLNode* next();
-
-    virtual void dump();
-
-protected:
-    Name name_;
-	Type type_;
-	int refID_;
-    std::auto_ptr<Number> val_;
+ protected:
+  Name name_;
+  Type type_;
+  int refID_;
+  std::auto_ptr<Number> val_;
 };
-
 
 /*
 template <class OutIte_>
 void BulletMLNode::getAllChildren(Name name, OutIte_ outIte) {
     ChildIterator ite;
     for (ite = childBegin(); ite != childEnd(); ite++) {
-		if ((*ite)->getName() == name) *outIte = *ite;
-		outIte++;
+                if ((*ite)->getName() == name) *outIte = *ite;
+                outIte++;
     }
 }
 
 */
 
-#endif // ! BULLETMLTREE_H_
+#endif  // ! BULLETMLTREE_H_

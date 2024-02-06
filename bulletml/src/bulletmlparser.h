@@ -1,6 +1,6 @@
-/// BulletML ‚Ìƒp[ƒT
+ï»¿/// BulletML ã®ãƒ‘ãƒ¼ã‚µ
 /**
- * c++ —p RELAX ‚ª–³‚©‚Á‚½‚Ì‚Å‚Ü‚ ©•ª‚Åì‚é‚±‚Æ‚É
+ * c++ ç”¨ RELAX ãŒç„¡ã‹ã£ãŸã®ã§ã¾ã‚è‡ªåˆ†ã§ä½œã‚‹ã“ã¨ã«
  */
 
 #ifndef BULLETMLPARSER_H_
@@ -15,79 +15,79 @@
 #include <stdio.h>
 
 class BulletMLParser {
-protected:
-    typedef std::vector<std::string> MyAttributes;
-    typedef MyAttributes::const_iterator MyAttributeIte;
+ protected:
+  typedef std::vector<std::string> MyAttributes;
+  typedef MyAttributes::const_iterator MyAttributeIte;
 
-public:
-    DECLSPEC BulletMLParser();
-    DECLSPEC virtual ~BulletMLParser();
+ public:
+  DECLSPEC BulletMLParser();
+  DECLSPEC virtual ~BulletMLParser();
 
-public:
-	DECLSPEC void build();
-    DECLSPEC virtual void parse() =0;
+ public:
+  DECLSPEC void build();
+  DECLSPEC virtual void parse() = 0;
 
-public:
-    /**
-     * BulletML ‚Íd—lãƒcƒŠ[\‘¢‚Ìª‚Á‚±‚ğæ‚ê‚é•K—v‚Í‚È‚­
-     * ƒ‰ƒxƒ‹‚©‚ç‚±‚ê‚ç‚Ì‚İæ‚ê‚ê‚Î—Ç‚¢
-     */
-    //@{
-    DECLSPEC BulletMLNode* getBulletRef(int id);
-    DECLSPEC BulletMLNode* getActionRef(int id);
-    DECLSPEC BulletMLNode* getFireRef(int id);
-    //@}
+ public:
+  /**
+   * BulletML ã¯ä»•æ§˜ä¸Šãƒ„ãƒªãƒ¼æ§‹é€ ã®æ ¹ã£ã“ã‚’å–ã‚Œã‚‹å¿…è¦ã¯ãªã
+   * ãƒ©ãƒ™ãƒ«ã‹ã‚‰ã“ã‚Œã‚‰ã®ã¿å–ã‚Œã‚Œã°è‰¯ã„
+   */
+  //@{
+  DECLSPEC BulletMLNode* getBulletRef(int id);
+  DECLSPEC BulletMLNode* getActionRef(int id);
+  DECLSPEC BulletMLNode* getFireRef(int id);
+  //@}
 
-	DECLSPEC const std::vector<BulletMLNode*>& getTopActions() const {
-		return topActions_;
-	}
+  DECLSPEC const std::vector<BulletMLNode*>& getTopActions() const {
+    return topActions_;
+  }
 
-	DECLSPEC void setHorizontal() { isHorizontal_ = true; }
-    DECLSPEC bool isHorizontal() const { return isHorizontal_; }
+  DECLSPEC void setHorizontal() { isHorizontal_ = true; }
+  DECLSPEC bool isHorizontal() const { return isHorizontal_; }
 
-protected:
-    BulletMLNode* addContent(const std::string& name);
-    void addAttribute(const MyAttributes& attr, BulletMLNode* elem);
+ protected:
+  BulletMLNode* addContent(const std::string& name);
+  void addAttribute(const MyAttributes& attr, BulletMLNode* elem);
 
-protected:
-    /// ‚±‚ê‚Ígcc‚Ìƒo[ƒWƒ‡ƒ“ŠÔ‚ÌŒİŠ·‚Ì‚½‚ß‚È‚Ì‚¾‚ª
-    template <class Char_>
-    std::string uc2string(Char_* src, size_t len = std::string::npos);
+ protected:
+  /// ã“ã‚Œã¯gccã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³é–“ã®äº’æ›ã®ãŸã‚ãªã®ã ãŒ
+  template <class Char_>
+  std::string uc2string(Char_* src, size_t len = std::string::npos);
 
-protected:
-    BulletMLNode* bulletml_;
+ protected:
+  BulletMLNode* bulletml_;
 
-	std::vector<BulletMLNode*> topActions_;
+  std::vector<BulletMLNode*> topActions_;
 
-    typedef std::vector<BulletMLNode*> MyMap;
-	typedef MyMap BulletMap;
-    typedef MyMap ActionMap;
-    typedef MyMap FireMap;
-    BulletMap bulletMap_;
-    ActionMap actionMap_;
-    FireMap fireMap_;
+  typedef std::vector<BulletMLNode*> MyMap;
+  typedef MyMap BulletMap;
+  typedef MyMap ActionMap;
+  typedef MyMap FireMap;
+  BulletMap bulletMap_;
+  ActionMap actionMap_;
+  FireMap fireMap_;
 
-    bool isHorizontal_;
+  bool isHorizontal_;
 
-protected:
-	/// ˆê“I‚È“±“ü
-	void setName(const std::string& name) { name_ = name; }
-	std::string name_;
-public:
-	DECLSPEC const std::string& getName() const { return name_; }
+ protected:
+  /// ä¸€æ™‚çš„ãªå°å…¥
+  void setName(const std::string& name) { name_ = name; }
+  std::string name_;
 
+ public:
+  DECLSPEC const std::string& getName() const { return name_; }
 };
 
 template <class Char_>
 std::string BulletMLParser::uc2string(Char_* src, size_t len) {
-    std::string dst;
-    size_t i = 0;
-    while (i != len && *src != '\0') {
-		dst += *src;
-		src++;
-		i++;
-    }
-    return dst;
+  std::string dst;
+  size_t i = 0;
+  while (i != len && *src != '\0') {
+    dst += *src;
+    src++;
+    i++;
+  }
+  return dst;
 }
 
-#endif // ! BULLETMLPARSER_H_
+#endif  // ! BULLETMLPARSER_H_

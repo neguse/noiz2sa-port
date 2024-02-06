@@ -1,4 +1,4 @@
-#include "bulletmlrunnerimpl.h"
+ï»¿#include "bulletmlrunnerimpl.h"
 #include "bulletmlrunner.h"
 #include "bulletmlparser.h"
 #include "bulletmlerror.h"
@@ -10,556 +10,536 @@
 #include <cmath>
 
 BulletMLRunnerImpl::Method
-BulletMLRunnerImpl::commandMap_[BulletMLNode::nameSize] = {
-	&BulletMLRunnerImpl::runBullet,
-	&BulletMLRunnerImpl::runAction,
-	&BulletMLRunnerImpl::runFire,
-	&BulletMLRunnerImpl::runChangeDirection,
-	&BulletMLRunnerImpl::runChangeSpeed,
-	&BulletMLRunnerImpl::runAccel,
-	&BulletMLRunnerImpl::runWait,
-	&BulletMLRunnerImpl::runRepeat,
-	&BulletMLRunnerImpl::runBulletRef,
-	&BulletMLRunnerImpl::runActionRef,
-	&BulletMLRunnerImpl::runFireRef,
-	&BulletMLRunnerImpl::runVanish
-};
+    BulletMLRunnerImpl::commandMap_[BulletMLNode::nameSize] = {
+        &BulletMLRunnerImpl::runBullet,
+        &BulletMLRunnerImpl::runAction,
+        &BulletMLRunnerImpl::runFire,
+        &BulletMLRunnerImpl::runChangeDirection,
+        &BulletMLRunnerImpl::runChangeSpeed,
+        &BulletMLRunnerImpl::runAccel,
+        &BulletMLRunnerImpl::runWait,
+        &BulletMLRunnerImpl::runRepeat,
+        &BulletMLRunnerImpl::runBulletRef,
+        &BulletMLRunnerImpl::runActionRef,
+        &BulletMLRunnerImpl::runFireRef,
+        &BulletMLRunnerImpl::runVanish};
 
 double BulletMLRunnerImpl::getDirection(BulletMLNode* dirNode,
                                         bool prevChange) {
-    double dir;
+  double dir;
 
-    bool isDefault = true;
-    dir = getNumberContents(dirNode);
+  bool isDefault = true;
+  dir = getNumberContents(dirNode);
 
-    if (dirNode->getType() != BulletMLNode::none) {
-		BulletMLNode::Type type = dirNode->getType();
-		isDefault = false;
+  if (dirNode->getType() != BulletMLNode::none) {
+    BulletMLNode::Type type = dirNode->getType();
+    isDefault = false;
 
-		if (type == BulletMLNode::absolute) {
-			if (bulletml_->isHorizontal()) {
-				dir -= 90;
-			}
-		}
-		else if (type == BulletMLNode::relative) {
-			dir += runner_->getBulletDirection();
-		}
-		else if (type == BulletMLNode::sequence) {
-			if (!prevDir_.isValidate()) {
-				dir = 0;
-				isDefault = true;
-			}
-			else dir += prevDir_;
-		}
-		else {
-			isDefault = true;
-		}
+    if (type == BulletMLNode::absolute) {
+      if (bulletml_->isHorizontal()) {
+        dir -= 90;
+      }
+    } else if (type == BulletMLNode::relative) {
+      dir += runner_->getBulletDirection();
+    } else if (type == BulletMLNode::sequence) {
+      if (!prevDir_.isValidate()) {
+        dir = 0;
+        isDefault = true;
+      } else
+        dir += prevDir_;
+    } else {
+      isDefault = true;
     }
+  }
 
-    if (isDefault) {
-		// –¾‚ç‚©‚É”ñŒø—¦
-		dir += runner_->getAimDirection();
-    }
+  if (isDefault) {
+    // æ˜Žã‚‰ã‹ã«éžåŠ¹çŽ‡
+    dir += runner_->getAimDirection();
+  }
 
-    while (dir > 360) dir -= 360;
-    while (dir < 0) dir += 360;
+  while (dir > 360) dir -= 360;
+  while (dir < 0) dir += 360;
 
-    if (prevChange) prevDir_ = dir;
+  if (prevChange) prevDir_ = dir;
 
-    return dir;
+  return dir;
 }
 
 double BulletMLRunnerImpl::getSpeed(BulletMLNode* spdNode) {
-    double spd;
+  double spd;
 
-    spd = getNumberContents(spdNode);
-    if (spdNode->getType() != BulletMLNode::none) {
-		BulletMLNode::Type type = spdNode->getType();
+  spd = getNumberContents(spdNode);
+  if (spdNode->getType() != BulletMLNode::none) {
+    BulletMLNode::Type type = spdNode->getType();
 
-		if (type == BulletMLNode::relative) {
-			spd += runner_->getBulletSpeed();
-		}
-		else if (type == BulletMLNode::sequence) {
-			if (!prevSpd_.isValidate()) spd = 1;
-			else spd += prevSpd_;
-		}
+    if (type == BulletMLNode::relative) {
+      spd += runner_->getBulletSpeed();
+    } else if (type == BulletMLNode::sequence) {
+      if (!prevSpd_.isValidate())
+        spd = 1;
+      else
+        spd += prevSpd_;
     }
+  }
 
-    // ƒfƒtƒHƒ‹ƒg‚Å‚Í‰½‚à‚µ‚È‚¢
+  // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ã¯ä½•ã‚‚ã—ãªã„
 
-    prevSpd_ = spd;
+  prevSpd_ = spd;
 
-    return spd;
+  return spd;
 }
 
 BulletMLRunnerImpl::BulletMLRunnerImpl(BulletMLState* state,
-									   BulletMLRunner* runner)
-	: bulletml_(state->getBulletML()),
+                                       BulletMLRunner* runner)
+    : bulletml_(state->getBulletML()),
       node_(state->getNode().begin(), state->getNode().end()),
-      actIte_(0), end_(false), runner_(runner)
-{
-	if (state->getParameter().get() != 0) {
-		parameters_ = state->getParameter();
-	}
+      actIte_(0),
+      end_(false),
+      runner_(runner) {
+  if (state->getParameter().get() != 0) {
+    parameters_ = state->getParameter();
+  }
 
-	delete state;
+  delete state;
 
+  for (std::vector<BulletMLNode*>::iterator ite = node_.begin();
+       ite != node_.end(); ++ite) {
+    (*ite)->setParent(0);
+  }
 
-	for (std::vector<BulletMLNode*>::iterator ite = node_.begin(); ite != node_.end(); ++ite) {
-
-		(*ite)->setParent(0);
-
-	}
-
-/*
-	std::for_each(node_.begin(), node_.end(),
-				  std::bind2nd(std::mem_fun(&BulletMLNode::setParent), 0));
-*/
-	actTurn_ = -1;
-	act_ = node_[0];
+  /*
+          std::for_each(node_.begin(), node_.end(),
+                                    std::bind2nd(std::mem_fun(&BulletMLNode::setParent),
+     0));
+  */
+  actTurn_ = -1;
+  act_ = node_[0];
 }
 
 BulletMLRunnerImpl::~BulletMLRunnerImpl() {
-	while (!repeatStack_.empty()) {
-		delete repeatStack_.top();
-		repeatStack_.pop();
-	}
+  while (!repeatStack_.empty()) {
+    delete repeatStack_.top();
+    repeatStack_.pop();
+  }
 }
 
 double BulletMLRunnerImpl::getNumberContents(const BulletMLNode* node) {
-    assert(node);
+  assert(node);
 
-	Variables::rank = runner_->getRank();
-	Variables::parameters = parameters_.get();
-	Variables::runner = runner_;
-	return node->getValue();
+  Variables::rank = runner_->getRank();
+  Variables::parameters = parameters_.get();
+  Variables::runner = runner_;
+  return node->getValue();
 }
 
 void BulletMLRunnerImpl::setSpeed() {
-    BulletMLNode* spd = act_->getChild(BulletMLNode::speed);
-    if (spd == 0) return;
+  BulletMLNode* spd = act_->getChild(BulletMLNode::speed);
+  if (spd == 0) return;
 
-    spd_ = getSpeed(spd);
+  spd_ = getSpeed(spd);
 }
 
 void BulletMLRunnerImpl::setDirection() {
-    BulletMLNode* dir = act_->getChild(BulletMLNode::direction);
-    if (dir == 0) return;
+  BulletMLNode* dir = act_->getChild(BulletMLNode::direction);
+  if (dir == 0) return;
 
-    dir_ = getDirection(dir);
+  dir_ = getDirection(dir);
 }
 
-bool BulletMLRunnerImpl::isTurnEnd() {
-	return isEnd() || actTurn_ > endTurn_;
-}
+bool BulletMLRunnerImpl::isTurnEnd() { return isEnd() || actTurn_ > endTurn_; }
 
 void BulletMLRunnerImpl::doWait(int frame) {
-	if (frame <= 0) return;
-	actTurn_ += frame;
+  if (frame <= 0) return;
+  actTurn_ += frame;
 }
 
 void BulletMLRunnerImpl::changes() {
-	int now = runner_->getTurn();
+  int now = runner_->getTurn();
 
-    if (changeDir_.get() != 0) {
-		if (changeDir_->isLast(now)) {
-			runner_->doChangeDirection(changeDir_->getLast());
-			delete auto_ptr_release(changeDir_);
-		}
-		else {
-			runner_->doChangeDirection(changeDir_->getValue(now));
-		}
+  if (changeDir_.get() != 0) {
+    if (changeDir_->isLast(now)) {
+      runner_->doChangeDirection(changeDir_->getLast());
+      delete auto_ptr_release(changeDir_);
+    } else {
+      runner_->doChangeDirection(changeDir_->getValue(now));
     }
+  }
 
-    if (changeSpeed_.get() != 0) {
-		if (changeSpeed_->isLast(now)) {
-			runner_->doChangeSpeed(changeSpeed_->getLast());
-			delete auto_ptr_release(changeSpeed_);
-		}
-		else {
-			runner_->doChangeSpeed(changeSpeed_->getValue(now));
-		}
+  if (changeSpeed_.get() != 0) {
+    if (changeSpeed_->isLast(now)) {
+      runner_->doChangeSpeed(changeSpeed_->getLast());
+      delete auto_ptr_release(changeSpeed_);
+    } else {
+      runner_->doChangeSpeed(changeSpeed_->getValue(now));
     }
+  }
 
-    if (accelx_.get() != 0) {
-		if (accelx_->isLast(now)) {
-			runner_->doAccelX(accelx_->getLast());
-			delete auto_ptr_release(accelx_);
-		}
-		else {
-			runner_->doAccelX(accelx_->getValue(now));
-		}
+  if (accelx_.get() != 0) {
+    if (accelx_->isLast(now)) {
+      runner_->doAccelX(accelx_->getLast());
+      delete auto_ptr_release(accelx_);
+    } else {
+      runner_->doAccelX(accelx_->getValue(now));
     }
+  }
 
-    if (accely_.get() != 0) {
-		if (accely_->isLast(now)) {
-			runner_->doAccelY(accely_->getLast());
-			delete auto_ptr_release(accely_);
-		}
-		else {
-			runner_->doAccelY(accely_->getValue(now));
-		}
+  if (accely_.get() != 0) {
+    if (accely_->isLast(now)) {
+      runner_->doAccelY(accely_->getLast());
+      delete auto_ptr_release(accely_);
+    } else {
+      runner_->doAccelY(accely_->getValue(now));
     }
+  }
 }
 
 void BulletMLRunnerImpl::runSub() {
-	// Œ©‚½‚­‚à‚È‚¢ƒR[ƒh‚¾‚ËB
-	while (act_ != 0 && !isTurnEnd()) {
-		BulletMLNode* prev = act_;
-		Method fp = commandMap_[act_->getName()];
-		(this->*fp)();
+  // è¦‹ãŸãã‚‚ãªã„ã‚³ãƒ¼ãƒ‰ã ã­ã€‚
+  while (act_ != 0 && !isTurnEnd()) {
+    BulletMLNode* prev = act_;
+    Method fp = commandMap_[act_->getName()];
+    (this->*fp)();
 
-		// ref ‚©‚ç–ß‚é
-		if (act_ == 0 &&
-			prev->getParent() != 0 &&
-			prev->getParent()->getName() == BulletMLNode::bulletml)
-		{
-			assert(!refStack_.empty());
-			prev = refStack_.top().first;
-			parameters_ = refStack_.top().second;
-			refStack_.pop();
-		}
+    // ref ã‹ã‚‰æˆ»ã‚‹
+    if (act_ == 0 && prev->getParent() != 0 &&
+        prev->getParent()->getName() == BulletMLNode::bulletml) {
+      assert(!refStack_.empty());
+      prev = refStack_.top().first;
+      parameters_ = refStack_.top().second;
+      refStack_.pop();
+    }
 
-		// ŽŸ‚Ì node ‚ð’T‚·
-		if (act_ == 0) act_ = prev->next();
+    // æ¬¡ã® node ã‚’æŽ¢ã™
+    if (act_ == 0) act_ = prev->next();
 
-		// ã‚É‘k‚Á‚ÄŽŸ‚Ì node ‚ð’T‚·
-		while (act_ == 0) {
-			if (prev->getParent() != 0 &&
-				prev->getParent()->getName() == BulletMLNode::repeat)
-			{
-				RepeatElem* rep = repeatStack_.top();
-				rep->ite++;
-				if (rep->ite < rep->end) {
-					act_ = rep->act;
-					break;
-				}
-				else {
-					delete rep;
-					repeatStack_.pop();
-				}
-			}
+    // ä¸Šã«é¡ã£ã¦æ¬¡ã® node ã‚’æŽ¢ã™
+    while (act_ == 0) {
+      if (prev->getParent() != 0 &&
+          prev->getParent()->getName() == BulletMLNode::repeat) {
+        RepeatElem* rep = repeatStack_.top();
+        rep->ite++;
+        if (rep->ite < rep->end) {
+          act_ = rep->act;
+          break;
+        } else {
+          delete rep;
+          repeatStack_.pop();
+        }
+      }
 
-			act_ = prev->getParent();
-			if (act_ == 0) break;
+      act_ = prev->getParent();
+      if (act_ == 0) break;
 
-			prev = act_;
+      prev = act_;
 
-			if (prev->getParent() != 0 &&
-				prev->getParent()->getName() == BulletMLNode::bulletml)
-			{
-				assert(!refStack_.empty());
-				prev = act_ = refStack_.top().first;
-				parameters_ = refStack_.top().second;
-				refStack_.pop();
-			}
+      if (prev->getParent() != 0 &&
+          prev->getParent()->getName() == BulletMLNode::bulletml) {
+        assert(!refStack_.empty());
+        prev = act_ = refStack_.top().first;
+        parameters_ = refStack_.top().second;
+        refStack_.pop();
+      }
 
-			act_ = act_->next();
-		}
-	}
+      act_ = act_->next();
+    }
+  }
 }
 
 void BulletMLRunnerImpl::run() {
-	if (isEnd()) return;
+  if (isEnd()) return;
 
-	changes();
+  changes();
 
-	endTurn_ = runner_->getTurn();
+  endTurn_ = runner_->getTurn();
 
-	// ÅŒã‚Ì wait, changeŒn‚ð‘Ò‚Â‚¾‚¯
-	if (act_ == 0) {
-		if (!isTurnEnd()) {
-			if (changeDir_.get() == 0 && changeSpeed_.get() == 0 &&
-				accelx_.get() == 0 && accely_.get() == 0)
-			{
-				end_ = true;
-			}
-		}
-		return;
-	}
+  // æœ€å¾Œã® wait, changeç³»ã‚’å¾…ã¤ã ã‘
+  if (act_ == 0) {
+    if (!isTurnEnd()) {
+      if (changeDir_.get() == 0 && changeSpeed_.get() == 0 &&
+          accelx_.get() == 0 && accely_.get() == 0) {
+        end_ = true;
+      }
+    }
+    return;
+  }
 
-	act_ = node_[actIte_];
-	if (actTurn_ == -1) actTurn_ = runner_->getTurn();
+  act_ = node_[actIte_];
+  if (actTurn_ == -1) actTurn_ = runner_->getTurn();
 
-	runSub();
+  runSub();
 
-	if (act_ == 0) {
-		actIte_++;
-		if (node_.size() != actIte_) act_ = node_[actIte_];
-	}
-	else {
-		node_[actIte_] = act_;
-	}
+  if (act_ == 0) {
+    actIte_++;
+    if (node_.size() != actIte_) act_ = node_[actIte_];
+  } else {
+    node_[actIte_] = act_;
+  }
 }
 
 void BulletMLRunnerImpl::runBullet() {
-	setSpeed();
-	setDirection();
-	if (!spd_.isValidate()) {
-		prevSpd_ = spd_ = runner_->getDefaultSpeed();
-	}
-	if (!dir_.isValidate()) {
-		prevDir_ = dir_ = runner_->getAimDirection();
-	}
+  setSpeed();
+  setDirection();
+  if (!spd_.isValidate()) {
+    prevSpd_ = spd_ = runner_->getDefaultSpeed();
+  }
+  if (!dir_.isValidate()) {
+    prevDir_ = dir_ = runner_->getAimDirection();
+  }
 
-	if (act_->getChild(BulletMLNode::action) == 0 &&
-		act_->getChild(BulletMLNode::actionRef) == 0) {
-		runner_->createSimpleBullet(dir_, spd_);
-	}
-	else {
-		std::vector<BulletMLNode*> acts;
-		act_->getAllChildrenVec(BulletMLNode::action, acts);
+  if (act_->getChild(BulletMLNode::action) == 0 &&
+      act_->getChild(BulletMLNode::actionRef) == 0) {
+    runner_->createSimpleBullet(dir_, spd_);
+  } else {
+    std::vector<BulletMLNode*> acts;
+    act_->getAllChildrenVec(BulletMLNode::action, acts);
 
-		act_->getAllChildrenVec(BulletMLNode::actionRef, acts);
+    act_->getAllChildrenVec(BulletMLNode::actionRef, acts);
 
-/*
+    /*
 
-		act_->getAllChildren(BulletMLNode::action, std::back_inserter(acts));
+                    act_->getAllChildren(BulletMLNode::action,
+       std::back_inserter(acts));
 
-		act_->getAllChildren(BulletMLNode::actionRef,
+                    act_->getAllChildren(BulletMLNode::actionRef,
 
-							 std::back_inserter(acts));
+                                                             std::back_inserter(acts));
 
-*/
+    */
 
-		BulletMLState* state = new BulletMLState(bulletml_, acts, parameters_);
+    BulletMLState* state = new BulletMLState(bulletml_, acts, parameters_);
 
-		runner_->createBullet(state, dir_, spd_);
-	}
+    runner_->createBullet(state, dir_, spd_);
+  }
 
-	act_ = 0;
+  act_ = 0;
 }
 
 void BulletMLRunnerImpl::runFire() {
-	shotInit();
+  shotInit();
 
-	setSpeed();
-	setDirection();
+  setSpeed();
+  setDirection();
 
-	BulletMLNode* bullet = act_->getChild(BulletMLNode::bullet);
-	if (bullet == 0) bullet = act_->getChild(BulletMLNode::bulletRef);
-	BulletMLError::doAssert(bullet != 0,
-							"<fire> must have contents bullet or bulletRef");
+  BulletMLNode* bullet = act_->getChild(BulletMLNode::bullet);
+  if (bullet == 0) bullet = act_->getChild(BulletMLNode::bulletRef);
+  BulletMLError::doAssert(bullet != 0,
+                          "<fire> must have contents bullet or bulletRef");
 
-	act_ = bullet;
+  act_ = bullet;
 }
 
 void BulletMLRunnerImpl::runAction() {
-	if (act_->childSize() == 0) act_ = 0;
-	else act_ = *act_->childBegin();
+  if (act_->childSize() == 0)
+    act_ = 0;
+  else
+    act_ = *act_->childBegin();
 }
 
 void BulletMLRunnerImpl::runWait() {
-	int frame = static_cast<int>(getNumberContents(act_));
-	doWait(frame);
+  int frame = static_cast<int>(getNumberContents(act_));
+  doWait(frame);
 
-	act_ = 0;
+  act_ = 0;
 }
 
 void BulletMLRunnerImpl::runRepeat() {
-	const BulletMLNode* times = act_->getChild(BulletMLNode::times);
-	if (times == 0) return;
+  const BulletMLNode* times = act_->getChild(BulletMLNode::times);
+  if (times == 0) return;
 
-	int timesNum = static_cast<int>(getNumberContents(times));
+  int timesNum = static_cast<int>(getNumberContents(times));
 
-	BulletMLNode* action = act_->getChild(BulletMLNode::action);
-	if (action == 0) action = act_->getChild(BulletMLNode::actionRef);
-	BulletMLError::doAssert(
-		action != 0,
-		"repeat elem must have contents action or actionRef");
+  BulletMLNode* action = act_->getChild(BulletMLNode::action);
+  if (action == 0) action = act_->getChild(BulletMLNode::actionRef);
+  BulletMLError::doAssert(action != 0,
+                          "repeat elem must have contents action or actionRef");
 
-	repeatStack_.push(new RepeatElem(0, timesNum, action));
+  repeatStack_.push(new RepeatElem(0, timesNum, action));
 
-	act_ = action;
+  act_ = action;
 }
 
 void BulletMLRunnerImpl::runFireRef() {
-	boost::shared_ptr<Parameters> prevPara = parameters_;
-	parameters_.reset(getParameters());
+  boost::shared_ptr<Parameters> prevPara = parameters_;
+  parameters_.reset(getParameters());
 
-	refStack_.push(std::make_pair(act_, prevPara));
-	act_ = bulletml_->getFireRef(act_->getRefID());
+  refStack_.push(std::make_pair(act_, prevPara));
+  act_ = bulletml_->getFireRef(act_->getRefID());
 }
 
 void BulletMLRunnerImpl::runActionRef() {
-	boost::shared_ptr<Parameters> prevPara = parameters_;
-	parameters_.reset(getParameters());
+  boost::shared_ptr<Parameters> prevPara = parameters_;
+  parameters_.reset(getParameters());
 
-	refStack_.push(std::make_pair(act_, prevPara));
-	act_ = bulletml_->getActionRef(act_->getRefID());
+  refStack_.push(std::make_pair(act_, prevPara));
+  act_ = bulletml_->getActionRef(act_->getRefID());
 }
 
 void BulletMLRunnerImpl::runBulletRef() {
-	boost::shared_ptr<Parameters> prevPara = parameters_;
-	parameters_.reset(getParameters());
+  boost::shared_ptr<Parameters> prevPara = parameters_;
+  parameters_.reset(getParameters());
 
-	refStack_.push(std::make_pair(act_, prevPara));
-	act_ = bulletml_->getBulletRef(act_->getRefID());
+  refStack_.push(std::make_pair(act_, prevPara));
+  act_ = bulletml_->getBulletRef(act_->getRefID());
 }
 
 void BulletMLRunnerImpl::runChangeDirection() {
-	int term = static_cast<int>(getNumberContents(
-									act_->getChild(BulletMLNode::term)));
-	BulletMLNode* dirNode = act_->getChild(BulletMLNode::direction);
-	BulletMLNode::Type type = dirNode->getType();
+  int term =
+      static_cast<int>(getNumberContents(act_->getChild(BulletMLNode::term)));
+  BulletMLNode* dirNode = act_->getChild(BulletMLNode::direction);
+  BulletMLNode::Type type = dirNode->getType();
 
-	double dir;
-	if (type != BulletMLNode::sequence) dir = getDirection(dirNode, false);
-	else dir = getNumberContents(dirNode);
+  double dir;
+  if (type != BulletMLNode::sequence)
+    dir = getDirection(dirNode, false);
+  else
+    dir = getNumberContents(dirNode);
 
-	calcChangeDirection(dir, term, type == BulletMLNode::sequence);
+  calcChangeDirection(dir, term, type == BulletMLNode::sequence);
 
-	act_ = 0;
+  act_ = 0;
 }
 
 void BulletMLRunnerImpl::runChangeSpeed() {
-	int term = static_cast<int>(getNumberContents(
-									act_->getChild(BulletMLNode::term)));
-	BulletMLNode* spdNode = act_->getChild(BulletMLNode::speed);
-	BulletMLNode::Type type = spdNode->getType();
+  int term =
+      static_cast<int>(getNumberContents(act_->getChild(BulletMLNode::term)));
+  BulletMLNode* spdNode = act_->getChild(BulletMLNode::speed);
+  BulletMLNode::Type type = spdNode->getType();
 
-	double spd;
-	if (type != BulletMLNode::sequence) spd = getSpeed(spdNode);
-	else {
-		spd = getNumberContents(spdNode) * (double)term
-			+ runner_->getBulletSpeed();
-	}
-	
+  double spd;
+  if (type != BulletMLNode::sequence)
+    spd = getSpeed(spdNode);
+  else {
+    spd = getNumberContents(spdNode) * (double)term + runner_->getBulletSpeed();
+  }
 
-	calcChangeSpeed(spd, term);
+  calcChangeSpeed(spd, term);
 
-	act_ = 0;
+  act_ = 0;
 }
 
 void BulletMLRunnerImpl::runAccel() {
-	int term = static_cast<int>(getNumberContents(
-									act_->getChild(BulletMLNode::term)));
-	BulletMLNode* hnode = act_->getChild(BulletMLNode::horizontal);
-	BulletMLNode* vnode = act_->getChild(BulletMLNode::vertical);
+  int term =
+      static_cast<int>(getNumberContents(act_->getChild(BulletMLNode::term)));
+  BulletMLNode* hnode = act_->getChild(BulletMLNode::horizontal);
+  BulletMLNode* vnode = act_->getChild(BulletMLNode::vertical);
 
-	if (bulletml_->isHorizontal()) {
-		if (vnode != 0) calcAccelX(getNumberContents(vnode), term,
-								   vnode->getType());
-		if (hnode != 0) calcAccelY(-getNumberContents(hnode), term,
-								   hnode->getType());
-	}
-	else {
-		if (hnode != 0) calcAccelX(getNumberContents(hnode), term,
-								   hnode->getType());
-		if (vnode != 0) calcAccelY(getNumberContents(vnode), term,
-								   vnode->getType());
-	}
+  if (bulletml_->isHorizontal()) {
+    if (vnode != 0)
+      calcAccelX(getNumberContents(vnode), term, vnode->getType());
+    if (hnode != 0)
+      calcAccelY(-getNumberContents(hnode), term, hnode->getType());
+  } else {
+    if (hnode != 0)
+      calcAccelX(getNumberContents(hnode), term, hnode->getType());
+    if (vnode != 0)
+      calcAccelY(getNumberContents(vnode), term, vnode->getType());
+  }
 
-	act_ = 0;
+  act_ = 0;
 }
 
 void BulletMLRunnerImpl::calcChangeDirection(double direction, int term,
-											 bool seq)
-{
-	int finalTurn = actTurn_ + term;
+                                             bool seq) {
+  int finalTurn = actTurn_ + term;
 
-	double dirFirst = runner_->getBulletDirection();
+  double dirFirst = runner_->getBulletDirection();
 
-	if (seq) {
-		auto_ptr_copy(changeDir_, new LinearFunc<int, double>
-					  (actTurn_, finalTurn,
-					   dirFirst, dirFirst + direction * term));
-	}
-	else {
-		double dirSpace;
+  if (seq) {
+    auto_ptr_copy(changeDir_,
+                  new LinearFunc<int, double>(actTurn_, finalTurn, dirFirst,
+                                              dirFirst + direction * term));
+  } else {
+    double dirSpace;
 
-		// ‚¿‚á‚ñ‚Æ‹ß‚¢•û‚ð‰ñ‚Á‚Ä‚¢‚­‚Ì‚ÍŒ‹\“ï‚µ‚¢‚Ë
-		double dirSpace1 = direction - dirFirst;
-		double dirSpace2;
-		if (dirSpace1 > 0) dirSpace2 = dirSpace1 - 360;
-		else dirSpace2 = dirSpace1 + 360;
-		if (abs(dirSpace1) < abs(dirSpace2)) dirSpace = dirSpace1;
-		else dirSpace = dirSpace2;
+    // ã¡ã‚ƒã‚“ã¨è¿‘ã„æ–¹ã‚’å›žã£ã¦ã„ãã®ã¯çµæ§‹é›£ã—ã„ã­
+    double dirSpace1 = direction - dirFirst;
+    double dirSpace2;
+    if (dirSpace1 > 0)
+      dirSpace2 = dirSpace1 - 360;
+    else
+      dirSpace2 = dirSpace1 + 360;
+    if (abs(dirSpace1) < abs(dirSpace2))
+      dirSpace = dirSpace1;
+    else
+      dirSpace = dirSpace2;
 
-		auto_ptr_copy(changeDir_, new LinearFunc<int, double>
-					  (actTurn_, finalTurn, dirFirst, dirFirst + dirSpace));
-	}
+    auto_ptr_copy(changeDir_,
+                  new LinearFunc<int, double>(actTurn_, finalTurn, dirFirst,
+                                              dirFirst + dirSpace));
+  }
 }
 
 void BulletMLRunnerImpl::calcChangeSpeed(double speed, int term) {
-	int finalTurn = actTurn_ + term;
+  int finalTurn = actTurn_ + term;
 
-	double spdFirst = runner_->getBulletSpeed();
+  double spdFirst = runner_->getBulletSpeed();
 
-	auto_ptr_copy(changeSpeed_, new LinearFunc<int, double>
-				  (actTurn_, finalTurn, spdFirst, speed));
+  auto_ptr_copy(changeSpeed_, new LinearFunc<int, double>(actTurn_, finalTurn,
+                                                          spdFirst, speed));
 }
 
 void BulletMLRunnerImpl::calcAccelY(double horizontal, int term,
-									BulletMLNode::Type type)
-{
-	int finalTurn = actTurn_ + term;
+                                    BulletMLNode::Type type) {
+  int finalTurn = actTurn_ + term;
 
-	double firstSpd = runner_->getBulletSpeedY();
-	double finalSpd;
+  double firstSpd = runner_->getBulletSpeedY();
+  double finalSpd;
 
-	if (type == BulletMLNode::sequence) {
-		finalSpd = firstSpd + horizontal * term;
-	}
-	else if (type == BulletMLNode::relative) {
-		finalSpd = firstSpd + horizontal;
-	}
-	else {
-		finalSpd = horizontal;
-	}
+  if (type == BulletMLNode::sequence) {
+    finalSpd = firstSpd + horizontal * term;
+  } else if (type == BulletMLNode::relative) {
+    finalSpd = firstSpd + horizontal;
+  } else {
+    finalSpd = horizontal;
+  }
 
-	auto_ptr_copy(accely_, new LinearFunc<int, double>
-				  (actTurn_, finalTurn, firstSpd, finalSpd));
+  auto_ptr_copy(accely_, new LinearFunc<int, double>(actTurn_, finalTurn,
+                                                     firstSpd, finalSpd));
 }
 
 void BulletMLRunnerImpl::calcAccelX(double vertical, int term,
-									BulletMLNode::Type type)
-{
-	int finalTurn = actTurn_ + term;
+                                    BulletMLNode::Type type) {
+  int finalTurn = actTurn_ + term;
 
-	double firstSpd = runner_->getBulletSpeedX();
-	double finalSpd;
+  double firstSpd = runner_->getBulletSpeedX();
+  double finalSpd;
 
-	if (type == BulletMLNode::sequence) {
-		finalSpd = firstSpd + vertical * term;
-	}
-	else if (type == BulletMLNode::relative) {
-		finalSpd = firstSpd + vertical;
-	}
-	else {
-		finalSpd = vertical;
-	}
+  if (type == BulletMLNode::sequence) {
+    finalSpd = firstSpd + vertical * term;
+  } else if (type == BulletMLNode::relative) {
+    finalSpd = firstSpd + vertical;
+  } else {
+    finalSpd = vertical;
+  }
 
-	auto_ptr_copy(accelx_ ,new LinearFunc<int, double>
-				  (actTurn_, finalTurn, firstSpd, finalSpd));
+  auto_ptr_copy(accelx_, new LinearFunc<int, double>(actTurn_, finalTurn,
+                                                     firstSpd, finalSpd));
 }
 
 void BulletMLRunnerImpl::runVanish() {
-	runner_->doVanish();
+  runner_->doVanish();
 
-	act_ = 0;
+  act_ = 0;
 }
 
 BulletMLRunnerImpl::Parameters* BulletMLRunnerImpl::getParameters() {
-	Parameters* para = 0;
-	bool first = true;
+  Parameters* para = 0;
+  bool first = true;
 
-	BulletMLNode::ChildIterator ite;
-	for (ite = act_->childBegin(); ite != act_->childEnd(); ite++) {
-		BulletMLNode* node = *ite;
-		if (node->getName() != BulletMLNode::param) continue;
+  BulletMLNode::ChildIterator ite;
+  for (ite = act_->childBegin(); ite != act_->childEnd(); ite++) {
+    BulletMLNode* node = *ite;
+    if (node->getName() != BulletMLNode::param) continue;
 
-		if (first) {
-			first = false;
-			para = new Parameters;
-			// 0”Ô—v‘f‚ÍŽg‚í‚È‚¢
-			para->push_back(0);
-		}
+    if (first) {
+      first = false;
+      para = new Parameters;
+      // 0ç•ªè¦ç´ ã¯ä½¿ã‚ãªã„
+      para->push_back(0);
+    }
 
-		para->push_back(getNumberContents(node));
-	}
+    para->push_back(getNumberContents(node));
+  }
 
-	return para;
+  return para;
 }
-
-	

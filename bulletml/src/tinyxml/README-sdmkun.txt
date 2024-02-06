@@ -1,4 +1,4 @@
---- in English ---
+ï»¿--- in English ---
 
 This TinyXML is NOT original version of TinyXML.
 This is hacked by me.
@@ -12,11 +12,11 @@ http://crystal.sourceforge.net/drupal/
 
 --- in japanese ---
 
-¤³¤Î TinyXML ¤Ï¥ª¥ê¥¸¥Ê¥ë¤Î¥Ğ¡¼¥¸¥ç¥ó¤Ç¤Ï¤Ê¤¯¤Æ¡¢
-»ä¤¬¤¤¤¸¤Ã¤¿¤â¤Î¤Ç¤¹¡£
-ÉáÄÌ¡¢¤³¤Î TinyXML ¤ò»È¤¦¤Ù¤­¤¸¤ã¤Ê¤¯¤Æ¡¢°Ê²¼¤Î¤ò»È¤¦¤Ù¤­¤Ç¤¹¡£
+ã“ã® TinyXML ã¯ã‚ªãƒªã‚¸ãƒŠãƒ«ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã§ã¯ãªãã¦ã€
+ç§ãŒã„ã˜ã£ãŸã‚‚ã®ã§ã™ã€‚
+æ™®é€šã€ã“ã® TinyXML ã‚’ä½¿ã†ã¹ãã˜ã‚ƒãªãã¦ã€ä»¥ä¸‹ã®ã‚’ä½¿ã†ã¹ãã§ã™ã€‚
 http://www.sourceforge.net/projects/tinyxml
 
-»ä¤Ï "Crystal Space 3D" ¤Î¥½¡¼¥¹¥³¡¼¥É¤ò»²¹Í¤Ë
-CDATA ¥»¥¯¥·¥ç¥óÂĞ±ş¤ò¹Ô¤¤¤Ş¤·¤¿¡£
+ç§ã¯ "Crystal Space 3D" ã®ã‚½ãƒ¼ã‚¹ã‚³ãƒ¼ãƒ‰ã‚’å‚è€ƒã«
+CDATA ã‚»ã‚¯ã‚·ãƒ§ãƒ³å¯¾å¿œã‚’è¡Œã„ã¾ã—ãŸã€‚
 http://crystal.sourceforge.net/drupal/

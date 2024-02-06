@@ -1,4 +1,4 @@
-#ifndef BULLETRUNNER_IMPL_H_
+ï»¿#ifndef BULLETRUNNER_IMPL_H_
 #define BULLETRUNNER_IMPL_H_
 
 #include "bulletmltree.h"
@@ -14,172 +14,162 @@ class BulletMLParser;
 
 typedef std::vector<double> BulletMLParameter;
 
-template<class C_>
+template <class C_>
 class Validatable {
-public:
-	Validatable() : isValidate_(false) {}
+ public:
+  Validatable() : isValidate_(false) {}
 
-	bool isValidate() const { return isValidate_; }
+  bool isValidate() const { return isValidate_; }
 
-	void enValidate() { isValidate_ = true; }
-	void disValidate() { isValidate_ = false; }
+  void enValidate() { isValidate_ = true; }
+  void disValidate() { isValidate_ = false; }
 
-	operator C_& () { return val_; }
+  operator C_&() { return val_; }
 
-	C_& operator = (const C_& rhs) {
-		isValidate_ = true;
-		val_ = rhs;
-		return *this;
-	}
+  C_& operator=(const C_& rhs) {
+    isValidate_ = true;
+    val_ = rhs;
+    return *this;
+  }
 
-protected:
-	C_ val_;
+ protected:
+  C_ val_;
 
-	bool isValidate_;
+  bool isValidate_;
 };
 
-/// xy‚Ì‰Šú’lEI’l‚©‚ç”CˆÓ‚Ìx‚É‘Î‚·‚éy‚ÌüŒ`•âŠÔ‚ğ“¾‚éƒNƒ‰ƒX
+/// xyã®åˆæœŸå€¤ãƒ»çµ‚å€¤ã‹ã‚‰ä»»æ„ã®xã«å¯¾ã™ã‚‹yã®ç·šå½¢è£œé–“ã‚’å¾—ã‚‹ã‚¯ãƒ©ã‚¹
 template <class X_ = double, class Y_ = double>
 class LinearFunc {
-public:
-	LinearFunc(const X_& firstX, const X_& lastX,
-			   const Y_& firstY, const Y_& lastY)
-		: firstX_(firstX), lastX_(lastX),
-		  firstY_(firstY), lastY_(lastY),
-		  gradient_((lastY-firstY)/(lastX-firstX)) {}
+ public:
+  LinearFunc(const X_& firstX, const X_& lastX, const Y_& firstY,
+             const Y_& lastY)
+      : firstX_(firstX),
+        lastX_(lastX),
+        firstY_(firstY),
+        lastY_(lastY),
+        gradient_((lastY - firstY) / (lastX - firstX)) {}
 
-	Y_ getValue(const X_& x) {
-		return firstY_ + gradient_ * (x-firstX_);
-	}
+  Y_ getValue(const X_& x) { return firstY_ + gradient_ * (x - firstX_); }
 
-	bool isLast(const X_& x) {
-		return x >= lastX_;
-	}
-	Y_ getLast() {
-		return lastY_;
-	}
+  bool isLast(const X_& x) { return x >= lastX_; }
+  Y_ getLast() { return lastY_; }
 
-protected:
-	X_ firstX_, lastX_;
-	Y_ firstY_, lastY_;
-	Y_ gradient_;
+ protected:
+  X_ firstX_, lastX_;
+  Y_ firstY_, lastY_;
+  Y_ gradient_;
 };
 
 class BulletMLRunnerImpl {
-public:
-    explicit BulletMLRunnerImpl(BulletMLState* state, BulletMLRunner* runner);
-    virtual ~BulletMLRunnerImpl();
+ public:
+  explicit BulletMLRunnerImpl(BulletMLState* state, BulletMLRunner* runner);
+  virtual ~BulletMLRunnerImpl();
 
-	/// Às‚·‚é
-    void run();
+  /// å®Ÿè¡Œã™ã‚‹
+  void run();
 
-public:
-	/// Às‚ªI—¹‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
-	bool isEnd() const {
-		return end_;
-	}
+ public:
+  /// å®Ÿè¡ŒãŒçµ‚äº†ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹
+  bool isEnd() const { return end_; }
 
-public:
-    /// ’e‚Ì•ûŒü•ÏX‚ğ“o˜^‚µA©‘O‚ÅŠeƒ^[ƒ“•ÏX‚·‚é
-	virtual void calcChangeDirection(double direction, int term, bool seq);
-    /// ’e‚Ì‘¬“x•ÏX‚ğ“o˜^‚µA©‘O‚ÅŠeƒ^[ƒ“•ÏX‚·‚é
-	virtual void calcChangeSpeed(double speed, int term);
-    /// ’e‚Ì‰Á‘¬‚ğ“o˜^‚µA©‘O‚ÅŠeƒ^[ƒ“•ÏX‚·‚é
-	/**
-	 * @todo horizontal, vertical ‚Ì type ‚Í–¢À‘•‚Å‚·B
-	 */
-	virtual void calcAccelX(double vertical, int term,
-							BulletMLNode::Type type);
-    /// ’e‚Ì‰Á‘¬‚ğ“o˜^‚µA©‘O‚ÅŠeƒ^[ƒ“•ÏX‚·‚é
-	/**
-	 * @todo horizontal, vertical ‚Ì type ‚Í–¢À‘•‚Å‚·B
-	 */
-	virtual void calcAccelY(double horizontal, int term,
-							BulletMLNode::Type type);
+ public:
+  /// å¼¾ã®æ–¹å‘å¤‰æ›´ã‚’ç™»éŒ²ã—ã€è‡ªå‰ã§å„ã‚¿ãƒ¼ãƒ³å¤‰æ›´ã™ã‚‹
+  virtual void calcChangeDirection(double direction, int term, bool seq);
+  /// å¼¾ã®é€Ÿåº¦å¤‰æ›´ã‚’ç™»éŒ²ã—ã€è‡ªå‰ã§å„ã‚¿ãƒ¼ãƒ³å¤‰æ›´ã™ã‚‹
+  virtual void calcChangeSpeed(double speed, int term);
+  /// å¼¾ã®åŠ é€Ÿã‚’ç™»éŒ²ã—ã€è‡ªå‰ã§å„ã‚¿ãƒ¼ãƒ³å¤‰æ›´ã™ã‚‹
+  /**
+   * @todo horizontal, vertical ã® type ã¯æœªå®Ÿè£…ã§ã™ã€‚
+   */
+  virtual void calcAccelX(double vertical, int term, BulletMLNode::Type type);
+  /// å¼¾ã®åŠ é€Ÿã‚’ç™»éŒ²ã—ã€è‡ªå‰ã§å„ã‚¿ãƒ¼ãƒ³å¤‰æ›´ã™ã‚‹
+  /**
+   * @todo horizontal, vertical ã® type ã¯æœªå®Ÿè£…ã§ã™ã€‚
+   */
+  virtual void calcAccelY(double horizontal, int term, BulletMLNode::Type type);
 
-protected:
-	/**
-	 * –{“–‚É‹““®‚ª‹C‚É“ü‚ç‚È‚¢ê‡‚Í‰¼‘zŠÖ”‰»‚µ‚ÄA
-	 * ‚±‚ê‚ç‚ÌƒI[ƒo[ƒ‰ƒCƒh‚àl‚¦‚Ä‚­‚¾‚³‚¢B
-	 */
-	//@{
-    void runBullet();
-    void runAction();
-    void runFire();
-    void runWait();
-    void runRepeat();
-    void runBulletRef();
-    void runActionRef();
-    void runFireRef();
-    void runChangeDirection();
-    void runChangeSpeed();
-    void runAccel();
-    void runVanish();
-	//@}
+ protected:
+  /**
+   * æœ¬å½“ã«æŒ™å‹•ãŒæ°—ã«å…¥ã‚‰ãªã„å ´åˆã¯ä»®æƒ³é–¢æ•°åŒ–ã—ã¦ã€
+   * ã“ã‚Œã‚‰ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰ã‚‚è€ƒãˆã¦ãã ã•ã„ã€‚
+   */
+  //@{
+  void runBullet();
+  void runAction();
+  void runFire();
+  void runWait();
+  void runRepeat();
+  void runBulletRef();
+  void runActionRef();
+  void runFireRef();
+  void runChangeDirection();
+  void runChangeSpeed();
+  void runAccel();
+  void runVanish();
+  //@}
 
-private:
-	void changes();
-	void runSub();
-	void init();
+ private:
+  void changes();
+  void runSub();
+  void init();
 
-	bool isTurnEnd();
-	void doWait(int frame);
+  bool isTurnEnd();
+  void doWait(int frame);
 
-    void setDirection();
-    void setSpeed();
+  void setDirection();
+  void setSpeed();
 
-    void shotInit() {
-		spd_.disValidate();
-		dir_.disValidate();
-    }
+  void shotInit() {
+    spd_.disValidate();
+    dir_.disValidate();
+  }
 
-    double getNumberContents(const BulletMLNode* node);
-    std::vector<double>* getParameters();
-    double getSpeed(BulletMLNode* spdNode);
-	double getDirection(BulletMLNode* dirNode, bool prevChange = true);
+  double getNumberContents(const BulletMLNode* node);
+  std::vector<double>* getParameters();
+  double getSpeed(BulletMLNode* spdNode);
+  double getDirection(BulletMLNode* dirNode, bool prevChange = true);
 
-private:
-private:
-    std::auto_ptr<LinearFunc<int, double> > changeDir_;
-    std::auto_ptr<LinearFunc<int, double> > changeSpeed_;
-    std::auto_ptr<LinearFunc<int, double> > accelx_;
-    std::auto_ptr<LinearFunc<int, double> > accely_;
+ private:
+ private:
+  std::auto_ptr<LinearFunc<int, double> > changeDir_;
+  std::auto_ptr<LinearFunc<int, double> > changeSpeed_;
+  std::auto_ptr<LinearFunc<int, double> > accelx_;
+  std::auto_ptr<LinearFunc<int, double> > accely_;
 
-protected:
-    Validatable<double> spd_, dir_, prevSpd_, prevDir_;
+ protected:
+  Validatable<double> spd_, dir_, prevSpd_, prevDir_;
 
-    typedef BulletMLParameter Parameters;
-    boost::shared_ptr<Parameters> parameters_;
+  typedef BulletMLParameter Parameters;
+  boost::shared_ptr<Parameters> parameters_;
 
-protected:
-    BulletMLParser* bulletml_;
-    BulletMLNode* act_;
-	std::vector<BulletMLNode*> node_;
-	int actTurn_;
-	std::vector<int> actTurns_;
-	int endTurn_;
-	size_t actIte_;
-	bool end_;
+ protected:
+  BulletMLParser* bulletml_;
+  BulletMLNode* act_;
+  std::vector<BulletMLNode*> node_;
+  int actTurn_;
+  std::vector<int> actTurns_;
+  int endTurn_;
+  size_t actIte_;
+  bool end_;
 
-protected:
-	struct RepeatElem {
-		RepeatElem(int i, int e, BulletMLNode* a)
-			: ite(i), end(e), act(a) {}
-		int ite, end;
-		BulletMLNode* act;
-	};
-    typedef std::stack<RepeatElem*> RepeatStack;
-    RepeatStack repeatStack_;
-    typedef std::stack<std::pair<BulletMLNode*,
-								 boost::shared_ptr<Parameters> > > RefStack;
-    RefStack refStack_;
+ protected:
+  struct RepeatElem {
+    RepeatElem(int i, int e, BulletMLNode* a) : ite(i), end(e), act(a) {}
+    int ite, end;
+    BulletMLNode* act;
+  };
+  typedef std::stack<RepeatElem*> RepeatStack;
+  RepeatStack repeatStack_;
+  typedef std::stack<std::pair<BulletMLNode*, boost::shared_ptr<Parameters> > >
+      RefStack;
+  RefStack refStack_;
 
-    typedef void (BulletMLRunnerImpl::*Method)();
-	static Method commandMap_[BulletMLNode::nameSize];
+  typedef void (BulletMLRunnerImpl::*Method)();
+  static Method commandMap_[BulletMLNode::nameSize];
 
-protected:
-	BulletMLRunner* runner_;
-
+ protected:
+  BulletMLRunner* runner_;
 };
 
-#endif // ! BULLETRUNNER_IMPL_H_
+#endif  // ! BULLETRUNNER_IMPL_H_

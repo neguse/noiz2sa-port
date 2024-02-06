@@ -1,6 +1,6 @@
-/// BulletML ÇÃÉpÅ[ÉTÅEÉcÉäÅ[ by tinyxml
+Ôªø/// BulletML „ÅÆ„Éë„Éº„Çµ„Éª„ÉÑ„É™„Éº by tinyxml
 /**
- * tinyxmlÇ…ÇÊÇÈBulletMLÇÃÉpÅ[ÉT
+ * tinyxml„Å´„Çà„ÇãBulletML„ÅÆ„Éë„Éº„Çµ
  */
 
 #ifndef BULLETMLPARSER_TINYXML_H_
@@ -15,22 +15,22 @@
 class BulletMLNode;
 
 class BulletMLParserTinyXML : public BulletMLParser {
-public:
-    DECLSPEC BulletMLParserTinyXML(const std::string& filename);
-    DECLSPEC virtual ~BulletMLParserTinyXML();
+ public:
+  DECLSPEC BulletMLParserTinyXML(const std::string& filename);
+  DECLSPEC virtual ~BulletMLParserTinyXML();
 
-    DECLSPEC virtual void parse();
+  DECLSPEC virtual void parse();
 
-protected:
-	void parseImpl(TiXmlDocument& doc);
+ protected:
+  void parseImpl(TiXmlDocument& doc);
 
-protected:
-    void getTree(TiXmlNode* node);
-    void translateNode(TiXmlNode* node);
+ protected:
+  void getTree(TiXmlNode* node);
+  void translateNode(TiXmlNode* node);
 
-private:
-    std::string xmlFile_;
-    BulletMLNode* curNode_;
+ private:
+  std::string xmlFile_;
+  BulletMLNode* curNode_;
 };
 
-#endif // ! BULLETMLPARSER_TINYXML_H_
+#endif  // ! BULLETMLPARSER_TINYXML_H_
