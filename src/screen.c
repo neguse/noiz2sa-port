@@ -26,6 +26,10 @@
 int windowMode = 0;
 int brightness = DEFAULT_BRIGHTNESS;
 
+static SDL_Window *window;
+static SDL_Renderer *renderer;
+static SDL_Texture *texture;
+static SDL_PixelFormat *fmt;
 static SDL_Surface *video, *layer, *lpanel, *rpanel;
 static LayerBit **smokeBuf;
 static LayerBit *pbuf;
@@ -53,7 +57,7 @@ static void loadSprites() {
   int i;
   char name[32];
   color[0].r = 100; color[0].g = 0; color[0].b = 0;
-  SDL_SetColors(video, color, 0, 1);
+  SDL_SetPaletteColors(video->format->palette, color, 0, 1);
   for ( i=0 ; i<SPRITE_NUM ; i++ ) {
     strcpy(name, "images/");
     strcat(name, spriteFile[i]);
@@ -65,11 +69,11 @@ static void loadSprites() {
     }
     sprite[i] = SDL_ConvertSurface(img,
 				   video->format, 
-				   SDL_HWSURFACE | SDL_SRCCOLORKEY);
-    SDL_SetColorKey(sprite[i], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+				   0);
+    SDL_SetColorKey(sprite[i], SDL_TRUE, 0);
   }
   color[0].r = color[0].g = color[0].b = 255;
-  SDL_SetColors(video, color, 0, 1);
+  SDL_SetPaletteColors(video->format->palette, color, 0, 1);
 }
 
 void drawSprite(int n, int x, int y) {
@@ -86,10 +90,10 @@ static void initPalette() {
     color[i].g = color[i].g*brightness/256;
     color[i].b = color[i].b*brightness/256;
   }
-  SDL_SetColors(video, color, 0, 256);
-  SDL_SetColors(layer, color, 0, 256);
-  SDL_SetColors(lpanel, color, 0, 256);
-  SDL_SetColors(rpanel, color, 0, 256);
+  SDL_SetPaletteColors(video->format->palette, color, 0, 256);
+  SDL_SetPaletteColors(layer->format->palette, color, 0, 256);
+  SDL_SetPaletteColors(lpanel->format->palette, color, 0, 256);
+  SDL_SetPaletteColors(rpanel->format->palette, color, 0, 256);
 }
 
 static int lyrSize;
@@ -121,7 +125,7 @@ static void makeSmokeBuf() {
   }
 }
 
-void initSDL(int window) {
+void initSDL() {
   Uint8 videoBpp;
   Uint32 videoFlags;
   SDL_PixelFormat *pfrm;
@@ -133,29 +137,51 @@ void initSDL(int window) {
   atexit(SDL_Quit);
 
   videoBpp = BPP;
-  videoFlags = SDL_DOUBLEBUF | SDL_HWSURFACE | SDL_HWPALETTE;
-  if ( !window ) videoFlags |= SDL_FULLSCREEN;
+  videoFlags = 0;
+  //if ( !windowMode ) videoFlags |= SDL_WINDOW_FULLSCREEN;
+  if ((window = SDL_CreateWindow(CAPTION, SDL_WINDOWPOS_UNDEFINED,
+                                 SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
+                                 SCREEN_HEIGHT, videoFlags)) == NULL) {
+    fprintf(stderr, "Unable to create SDL window: %s\n", SDL_GetError());
+    SDL_Quit();
+    exit(1);
+  };
 
-  if ( (video = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, videoBpp, videoFlags)) == NULL ) {
-    fprintf(stderr, "Unable to create SDL screen: %s\n", SDL_GetError());
+  if ((renderer = SDL_CreateRenderer(window, -1, 0)) == NULL) {
+    fprintf(stderr, "Unable to create SDL renderer: %s\n", SDL_GetError());
     SDL_Quit();
     exit(1);
   }
+
   screenRect.x = screenRect.y = 0;
   screenRect.w = SCREEN_WIDTH; screenRect.h = SCREEN_HEIGHT;
   pfrm = video->format;
-  if ( NULL == ( layer = SDL_CreateRGBSurface
+  if ( NULL == ( video = SDL_CreateRGBSurface
+		(SDL_SWSURFACE, SCREEN_WIDTH, SCREEN_HEIGHT, videoBpp,
+		 0, 0, 0, 0)) ||
+       NULL == ( layer = SDL_CreateRGBSurface
 		(SDL_SWSURFACE, LAYER_WIDTH, LAYER_HEIGHT, videoBpp,
-		 pfrm->Rmask, pfrm->Gmask, pfrm->Bmask, pfrm->Amask)) ||
+		 0, 0, 0, 0)) ||
        NULL == ( lpanel = SDL_CreateRGBSurface
 		(SDL_SWSURFACE, PANEL_WIDTH, PANEL_HEIGHT, videoBpp,
-		 pfrm->Rmask, pfrm->Gmask, pfrm->Bmask, pfrm->Amask)) ||
+		 0, 0, 0, 0)) ||
        NULL == ( rpanel = SDL_CreateRGBSurface
 		(SDL_SWSURFACE, PANEL_WIDTH, PANEL_HEIGHT, videoBpp,
-		 pfrm->Rmask, pfrm->Gmask, pfrm->Bmask, pfrm->Amask)) ) {
+		 0, 0, 0, 0)) ) {
       fprintf(stderr, "Couldn't create surface: %s\n", SDL_GetError());
       exit(1);
   }
+
+  if ( NULL == (texture = SDL_CreateTextureFromSurface(renderer, video))) {
+    fprintf(stderr, "Couldn't create texture: %s\n", SDL_GetError());
+    exit(1);
+  }
+
+  if ( NULL == (fmt = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888))) {
+    fprintf(stderr, "Couldn't create pixel format: %s\n", SDL_GetError());
+    exit(1);
+  }
+
   layerRect.x = (SCREEN_WIDTH-LAYER_WIDTH)/2;
   layerRect.y = (SCREEN_HEIGHT-LAYER_HEIGHT)/2;
   layerRect.w = LAYER_WIDTH;
@@ -188,7 +214,6 @@ void initSDL(int window) {
 
   stick = SDL_JoystickOpen(0);
 
-  SDL_WM_SetCaption(CAPTION, NULL);
   SDL_ShowCursor(SDL_DISABLE);
   //SDL_WM_GrabInput(SDL_GRAB_ON);
 }
@@ -211,7 +236,13 @@ void flipScreen() {
   if ( status == TITLE ) {
     drawTitle();
   }
-  SDL_Flip(video);
+  SDL_RenderClear(renderer);
+  SDL_Surface *tmp = SDL_ConvertSurface(video, fmt, 0);
+  SDL_BlitSurface(video, NULL, tmp, NULL);
+  SDL_UpdateTexture(texture, NULL, tmp->pixels, tmp->pitch);
+  SDL_FreeSurface(tmp);
+  SDL_RenderCopy(renderer, texture, NULL, NULL);
+  SDL_RenderPresent(renderer);
 }
 
 void clearScreen() {

@@ -45,7 +45,7 @@ extern SDL_Joystick *stick;
 extern int buttonReversed;
 extern int brightness;
 
-void initSDL(int window);
+void initSDL();
 void closeSDL();
 void blendScreen();
 void flipScreen();

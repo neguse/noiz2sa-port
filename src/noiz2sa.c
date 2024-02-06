@@ -271,7 +271,7 @@ int main(int argc, char *argv[]) {
   parseArgs(argc, argv);
 
   initDegutil();
-  initSDL(windowMode);
+  initSDL();
   if ( !noSound ) initSound();
   initFirst();
   initTitle();
