@@ -6,7 +6,6 @@
 #include <vector>
 #include <memory>
 #include <stack>
-#include <boost/smart_ptr.hpp>
 
 class BulletMLRunner;
 class BulletMLState;
@@ -141,7 +140,7 @@ class BulletMLRunnerImpl {
   Validatable<double> spd_, dir_, prevSpd_, prevDir_;
 
   typedef BulletMLParameter Parameters;
-  boost::shared_ptr<Parameters> parameters_;
+  std::shared_ptr<Parameters> parameters_;
 
  protected:
   BulletMLParser* bulletml_;
@@ -161,7 +160,7 @@ class BulletMLRunnerImpl {
   };
   typedef std::stack<RepeatElem*> RepeatStack;
   RepeatStack repeatStack_;
-  typedef std::stack<std::pair<BulletMLNode*, boost::shared_ptr<Parameters> > >
+  typedef std::stack<std::pair<BulletMLNode*, std::shared_ptr<Parameters> > >
       RefStack;
   RefStack refStack_;
 
