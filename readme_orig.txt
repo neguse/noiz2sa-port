@@ -1,119 +1,119 @@
-Noiz2sa  readme.txt
+﻿Noiz2sa  readme.txt
 for Windows98/2000/XP
 ver. 0.52
 (C) Kenta Cho
 
-�A�u�X�g���N�g�V���[�e�B���O�ANoiz2sa�B
+アブストラクトシューティング、Noiz2sa。
 
 
-�� �C���X�g�[�����@
+○ インストール方法
 
-noiz2sa0_52.zip��K���ȃt�H���_�ɓW�J���Ă��������B
-���̌�A'noiz2sa.exe'�����s���Ă��������B
-
-
-�� �V�ѕ�
-
-�L�[�{�[�h���W���C�X�e�B�b�N�ŃX�e�[�W��I��ł��������B
-
- - �ړ�         ���L�[ / �W���C�X�e�b�N
- - �V���b�g     [Z]      / �g���K1, �g���K4
- - �X���[�_�E�� [X]      / �g���K2, �g���K3
- - �|�[�Y       [P]
-
-�V���b�g�L�[�ŃQ�[�����J�n���܂��B
-
-���@�𑀍삵�āA�e��������Ă��������B
-�G�{�̂ɐڐG���Ă����@�͔j�󂳂�܂���B
-�X���[�_�E���L�[�������Ă���ԁA���@���x���Ȃ�܂��B
-
-�΂̐��̓{�[�i�X�A�C�e���ł��B
-�A�����Ď�邱�ƂŁA�A�C�e���̓��_�i����ɕ\���j���㏸���܂��B
-
-���@�����ׂĔj�󂳂��ƁA�Q�[���I�[�o�[�ł��B
-���@��200,000�_�����500,000�_���Ƃ�1�@�����܂��B
-
-�ȉ��̃R�}���h���C���I�v�V�������w��ł��܂��B
- -nosound       �����o�͂��܂���B
- -window        �E�B���h�E���[�h�ŋN�����܂��B
- -reverse       �V���b�g�ƃX���[�_�E���̃L�[�����ւ��܂��B
- -brightness n  ��ʂ̖��邳��ݒ肵�܂�(n=0-256)�B
- -accframe      �ʂ̃t���[�����[�g������@�𗘗p���܂��B
-                �i�t���[�����[�g����肵�Ȃ��Ȃǂ̖�肪����ꍇ��
-                  ���p���Ă��������B�j
+noiz2sa0_52.zipを適当なフォルダに展開してください。
+その後、'noiz2sa.exe'を実行してください。
 
 
-�� �I���W�i���e���̒ǉ�
+○ 遊び方
 
-�I���W�i���̒e���������āANoiz2sa�ɒǉ����邱�Ƃ��ł��܂��B
-'noiz2sa'�f�B���N�g�����ɁA'zako', 'middle', 'boss'��3��
-�f�B���N�g��������A���̒��ɒe���p�^�[���t�@�C�����z�u����܂��B
+キーボードかジョイスティックでステージを選んでください。
 
-�e���p�^�[���t�@�C����BulletML�ŏ�����Ă��܂��B
-BulletML�ɂ��ẮA�ȉ��̃y�[�W���Q�Ƃ��������B
+ - 移動         矢印キー / ジョイステック
+ - ショット     [Z]      / トリガ1, トリガ4
+ - スローダウン [X]      / トリガ2, トリガ3
+ - ポーズ       [P]
+
+ショットキーでゲームを開始します。
+
+自機を操作して、弾幕を避けてください。
+敵本体に接触しても自機は破壊されません。
+スローダウンキーを押している間、自機が遅くなります。
+
+緑の星はボーナスアイテムです。
+連続して取ることで、アイテムの得点（左上に表示）が上昇します。
+
+自機がすべて破壊されると、ゲームオーバーです。
+自機は200,000点および500,000点ごとに1機増えます。
+
+以下のコマンドラインオプションが指定できます。
+ -nosound       音を出力しません。
+ -window        ウィンドウモードで起動します。
+ -reverse       ショットとスローダウンのキーを入れ替えます。
+ -brightness n  画面の明るさを設定します(n=0-256)。
+ -accframe      別のフレームレート制御方法を利用します。
+                （フレームレートが一定しないなどの問題がある場合に
+                  利用してください。）
+
+
+○ オリジナル弾幕の追加
+
+オリジナルの弾幕を書いて、Noiz2saに追加することができます。
+'noiz2sa'ディレクトリ内に、'zako', 'middle', 'boss'の3つの
+ディレクトリがあり、この中に弾幕パターンファイルが配置されます。
+
+弾幕パターンファイルはBulletMLで書かれています。
+BulletMLについては、以下のページを参照ください。
 
 BulletML
 http://www.asahi-net.or.jp/~cs8k-cyu/bulletml/index.html 
 
-'zako'�f�B���N�g���́A�G���p�̃f�[�^�A
-'middle'�f�B���N�g���́A���^�@�p�̃f�[�^�A
-'boss'�f�B���N�g���́A��^�@�p�̃f�[�^�ł��B
+'zako'ディレクトリは、雑魚用のデータ、
+'middle'ディレクトリは、中型機用のデータ、
+'boss'ディレクトリは、大型機用のデータです。
 
-�e���p�^�[���t�@�C�����L�q����ꍇ�ɂ́A$rank�ϐ���
-�e���̓�Փx�𒲐�����K�v������܂��B
-$rank�ϐ��́ANoiz2sa���ŁA�e�V�[���̓�Փx�����p�ɗ��p����܂��B
-
-
-�� ���ӌ��A�����z
-
-�R�����g�Ȃǂ́Acs8k-cyu@asahi-net.or.jp �܂ł��肢���܂��B
+弾幕パターンファイルを記述する場合には、$rank変数で
+弾幕の難易度を調整する必要があります。
+$rank変数は、Noiz2sa内で、各シーンの難易度調整用に利用されます。
 
 
-�� �ӎ�
+○ ご意見、ご感想
 
-BulletML�t�@�C���̃p�[�X��libBulletML�𗘗p���Ă��܂��B
+コメントなどは、cs8k-cyu@asahi-net.or.jp までお願いします。
+
+
+○ 謝辞
+
+BulletMLファイルのパースにlibBulletMLを利用しています。
  libBulletML
  http://user.ecc.u-tokyo.ac.jp/~s31552/wp/libbulletml/
 
-��ʂ̏o�͂ɂ�Simple DirectMedia Layer�𗘗p���Ă��܂��B
+画面の出力にはSimple DirectMedia Layerを利用しています。
  Simple DirectMedia Layer
  http://www.libsdl.org/
 
-BGM��SE�̏o�͂�SDL_mixer��Ogg Vorbis CODEC�𗘗p���Ă��܂��B
+BGMとSEの出力にSDL_mixerとOgg Vorbis CODECを利用しています。
  SDL_mixer 1.2
  http://www.libsdl.org/projects/SDL_mixer/
  Vorbis.com
  http://www.vorbis.com/
 
 
-�� �q�X�g��
+○ ヒストリ
 
 2019  3/ 1  ver. 0.52
-            SDL.dll�A�b�v�f�[�g�B
+            SDL.dllアップデート。
 2003  8/10  ver. 0.51
-            libBulletML�̃A�b�v�f�[�g�B
+            libBulletMLのアップデート。
 2003  2/12  ver. 0.5
-            -accframe�I�v�V�����̒ǉ��B
-            �e���ǉ��B
+            -accframeオプションの追加。
+            弾幕追加。
 2003  1/ 3  ver. 0.42
-            �e���C���B
+            弾幕修正。
 2003  1/ 3  ver. 0.41
-            �e�������B
+            弾幕調整。
 2002 12/31  ver. 0.4
-            ENDLESS INSANE�ǉ��B
-            �e���ǉ��B
+            ENDLESS INSANE追加。
+            弾幕追加。
 2002 11/23  ver. 0.32
-            ���G���Ԃ̒����B
+            無敵時間の調整。
 2002 11/ 9  ver. 0.31
-            ���@�̈ړ��\�͈͂̏C���B
-            -brightness�I�v�V�����̒ǉ��B
+            自機の移動可能範囲の修正。
+            -brightnessオプションの追加。
 2002 11/ 3  ver. 0.3
-            �����J�ŁB
+            初公開版。
 
 
-�� ���C�Z���X
+○ ライセンス
 
-Noiz2sa��BSD�X�^�C�����C�Z���X�̂��Ɣz�z����܂��B
+Noiz2saはBSDスタイルライセンスのもと配布されます。
 
 License
 -------
