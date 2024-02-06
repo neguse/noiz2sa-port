@@ -12,9 +12,9 @@
 #ifndef FOECOMMAND_H_
 #define FOECOMMAND_H_
 
-#include "bulletml/bulletmlparser.h"
-#include "bulletml/bulletmlparser-tinyxml.h"
-#include "bulletml/bulletmlrunner.h"
+#include <bulletmlparser.h>
+#include <bulletmlparser-tinyxml.h>
+#include <bulletmlrunner.h>
 #include "foe.h"
 
 class FoeCommand : public BulletMLRunner {
@@ -30,20 +30,19 @@ class FoeCommand : public BulletMLRunner {
   virtual double getDefaultSpeed();
   virtual double getRank();
   virtual void createSimpleBullet(double direction, double speed);
-  virtual void createBullet(BulletMLState* state, double direction, double speed);
+  virtual void createBullet(BulletMLState* state, double direction,
+                            double speed);
   virtual int getTurn();
   virtual void doVanish();
-  
+
   virtual void doChangeDirection(double d);
   virtual void doChangeSpeed(double s);
   virtual void FoeCommand::doAccelX(double ax);
   virtual void FoeCommand::doAccelY(double ay);
   virtual double FoeCommand::getBulletSpeedX();
   virtual double FoeCommand::getBulletSpeedY();
-  
+
  private:
-  struct foe *foe;
+  struct foe* foe;
 };
 #endif
-
-

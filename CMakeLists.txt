@@ -9,7 +9,18 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_mixer CONFIG REQUIRED)
 
-file(GLOB_RECURSE sources "src/*.c" "src/*.cc")
+file(GLOB_RECURSE sources "src/*.c" "src/*.cc"
+    "bulletml/src/bulletmlparser.cpp"
+    "bulletml/src/bulletmlparser-tinyxml.cpp"
+    "bulletml/src/bulletmlrunner.cpp"
+    "bulletml/src/bulletmlrunnerimpl.cpp"
+    "bulletml/src/formula-variables.cpp"
+    "bulletml/src/bulletmltree.cpp"
+    "bulletml/src/calc.cpp"
+    "bulletml/src/tinyxml/tinyxml.cpp"
+    "bulletml/src/tinyxml/tinyxmlparser.cpp"
+    "bulletml/src/tinyxml/tinyxmlerror.cpp"
+)
 
 add_executable(noiz2sa ${sources})
 

@@ -12,9 +12,9 @@
 #ifndef FOE_H_
 #define FOE_H_
 
-#include "bulletml/bulletmlparser.h"
-#include "bulletml/bulletmlparser-tinyxml.h"
-#include "bulletml/bulletmlrunner.h"
+#include <bulletmlparser.h>
+#include <bulletmlparser-tinyxml.h>
+#include <bulletmlrunner.h>
 #include "foecommand.h"
 #include "barragemanager.h"
 
@@ -37,7 +37,7 @@ struct foe {
   int shield;
   int cnt, color;
   int hit;
-  
+
   BulletMLParser *parser;
 };
 
@@ -49,12 +49,12 @@ extern "C" {
 
 extern int foeCnt, enNum[];
 
-Foe* addFoe(int x, int y, double rank, int d, int spd, int typek, int shield, 
-	    BulletMLParser *parser);
-Foe* addFoeBossActiveBullet(int x, int y, double rank, 
-			    int d, int spd, BulletMLParser *state);
-void addFoeActiveBullet(Vector *pos, double rank, 
-			int d, int spd, int color, BulletMLState *state);
+Foe *addFoe(int x, int y, double rank, int d, int spd, int typek, int shield,
+            BulletMLParser *parser);
+Foe *addFoeBossActiveBullet(int x, int y, double rank, int d, int spd,
+                            BulletMLParser *state);
+void addFoeActiveBullet(Vector *pos, double rank, int d, int spd, int color,
+                        BulletMLState *state);
 void addFoeNormalBullet(Vector *pos, double rank, int d, int spd, int color);
 void removeFoe(Foe *fe);
 #endif
