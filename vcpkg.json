@@ -1,0 +1,10 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+    "name": "noiz2sa",
+    "version": "0.0.0",
+    "builtin-baseline": "1f619be01b436b796dab797dd1e1721c5676f8ac",
+    "dependencies": [
+        "sdl2",
+        "sdl2-mixer"
+    ]
+}
