@@ -27,6 +27,8 @@ typedef double NumType;
 #include "formula.h"
 #include "formula-variables.h"
 
+#define register /* register removed in C++17 */
+
 int yyerror(char *s);
 int yylex();
 
