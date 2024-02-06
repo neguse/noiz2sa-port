@@ -9,6 +9,11 @@
  *
  * @version $Revision: 1.8 $
  */
+
+#ifdef EMSCRIPTEN
+#include <emscripten.h>
+#endif
+
 #include "SDL.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -259,25 +264,14 @@ int interval = INTERVAL_BASE;
 int tick = 0;
 static int pPrsd = 1;
 
-int main(int argc, char *argv[]) {
-  int done = 0;
-  long prvTickCount = 0;
-  int i;
-  int btn;
-  SDL_Event event;
-  long nowTick;
-  int frame;
+SDL_Event event;
+long nowTick;
+int frame;
+long prvTickCount = 0;
+int done = 0;
 
-  parseArgs(argc, argv);
-
-  initDegutil();
-  initSDL();
-  if ( !noSound ) initSound();
-  initFirst();
-  initTitle();
-
-  while ( !done ) {
-    SDL_PollEvent(&event);
+void mainLoop() {
+      SDL_PollEvent(&event);
     keys = SDL_GetKeyboardState(NULL);
     if ( keys[SDL_SCANCODE_ESCAPE] == SDL_PRESSED || event.type == SDL_QUIT ) done = 1;
     if ( keys[SDL_SCANCODE_P] == SDL_PRESSED ) {
@@ -309,13 +303,31 @@ int main(int argc, char *argv[]) {
     } else {
       prvTickCount += frame*interval;
     }
-    for ( i=0 ; i<frame ; i++ ) {
+    for ( int i=0 ; i<frame ; i++ ) {
       move();
       tick++;
     }
     smokeScreen();
     draw();
     flipScreen();
+}
+
+int main(int argc, char *argv[]) {
+  parseArgs(argc, argv);
+
+  initDegutil();
+  initSDL();
+  if ( !noSound ) initSound();
+  initFirst();
+  initTitle();
+
+  #ifdef EMSCRIPTEN
+  emscripten_set_main_loop(mainLoop, 0, 1);
+  #else
+  while ( !done ) {
+    mainLoop();
   }
+  #endif
   quitLast();
 }
+
