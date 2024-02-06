@@ -131,10 +131,10 @@ class BulletMLRunnerImpl {
 
  private:
  private:
-  std::auto_ptr<LinearFunc<int, double> > changeDir_;
-  std::auto_ptr<LinearFunc<int, double> > changeSpeed_;
-  std::auto_ptr<LinearFunc<int, double> > accelx_;
-  std::auto_ptr<LinearFunc<int, double> > accely_;
+  std::unique_ptr<LinearFunc<int, double> > changeDir_;
+  std::unique_ptr<LinearFunc<int, double> > changeSpeed_;
+  std::unique_ptr<LinearFunc<int, double> > accelx_;
+  std::unique_ptr<LinearFunc<int, double> > accely_;
 
  protected:
   Validatable<double> spd_, dir_, prevSpd_, prevDir_;

@@ -4,8 +4,6 @@
 #include "bulletmlerror.h"
 #include "formula-variables.h"
 
-#include "auto_ptr_fix.h"
-
 #include <cassert>
 #include <cmath>
 
@@ -159,7 +157,7 @@ void BulletMLRunnerImpl::changes() {
   if (changeDir_.get() != 0) {
     if (changeDir_->isLast(now)) {
       runner_->doChangeDirection(changeDir_->getLast());
-      delete auto_ptr_release(changeDir_);
+      changeDir_.reset();
     } else {
       runner_->doChangeDirection(changeDir_->getValue(now));
     }
@@ -168,7 +166,7 @@ void BulletMLRunnerImpl::changes() {
   if (changeSpeed_.get() != 0) {
     if (changeSpeed_->isLast(now)) {
       runner_->doChangeSpeed(changeSpeed_->getLast());
-      delete auto_ptr_release(changeSpeed_);
+      changeSpeed_.reset();
     } else {
       runner_->doChangeSpeed(changeSpeed_->getValue(now));
     }
@@ -177,7 +175,7 @@ void BulletMLRunnerImpl::changes() {
   if (accelx_.get() != 0) {
     if (accelx_->isLast(now)) {
       runner_->doAccelX(accelx_->getLast());
-      delete auto_ptr_release(accelx_);
+      accelx_.reset();
     } else {
       runner_->doAccelX(accelx_->getValue(now));
     }
@@ -186,7 +184,7 @@ void BulletMLRunnerImpl::changes() {
   if (accely_.get() != 0) {
     if (accely_->isLast(now)) {
       runner_->doAccelY(accely_->getLast());
-      delete auto_ptr_release(accely_);
+      accely_.reset();
     } else {
       runner_->doAccelY(accely_->getValue(now));
     }
@@ -445,9 +443,8 @@ void BulletMLRunnerImpl::calcChangeDirection(double direction, int term,
   double dirFirst = runner_->getBulletDirection();
 
   if (seq) {
-    auto_ptr_copy(changeDir_,
-                  new LinearFunc<int, double>(actTurn_, finalTurn, dirFirst,
-                                              dirFirst + direction * term));
+    changeDir_ = std::make_unique<LinearFunc<int, double>>(
+        actTurn_, finalTurn, dirFirst, dirFirst + direction * term);
   } else {
     double dirSpace;
 
@@ -463,9 +460,8 @@ void BulletMLRunnerImpl::calcChangeDirection(double direction, int term,
     else
       dirSpace = dirSpace2;
 
-    auto_ptr_copy(changeDir_,
-                  new LinearFunc<int, double>(actTurn_, finalTurn, dirFirst,
-                                              dirFirst + dirSpace));
+    changeDir_ = std::make_unique<LinearFunc<int, double>>(
+        actTurn_, finalTurn, dirFirst, dirFirst + dirSpace);
   }
 }
 
@@ -474,8 +470,8 @@ void BulletMLRunnerImpl::calcChangeSpeed(double speed, int term) {
 
   double spdFirst = runner_->getBulletSpeed();
 
-  auto_ptr_copy(changeSpeed_, new LinearFunc<int, double>(actTurn_, finalTurn,
-                                                          spdFirst, speed));
+  changeSpeed_ = std::make_unique<LinearFunc<int, double>>(actTurn_, finalTurn,
+                                                           spdFirst, speed);
 }
 
 void BulletMLRunnerImpl::calcAccelY(double horizontal, int term,
@@ -493,8 +489,8 @@ void BulletMLRunnerImpl::calcAccelY(double horizontal, int term,
     finalSpd = horizontal;
   }
 
-  auto_ptr_copy(accely_, new LinearFunc<int, double>(actTurn_, finalTurn,
-                                                     firstSpd, finalSpd));
+  accely_ = std::make_unique<LinearFunc<int, double>>(actTurn_, finalTurn,
+                                                      firstSpd, finalSpd);
 }
 
 void BulletMLRunnerImpl::calcAccelX(double vertical, int term,
@@ -512,8 +508,8 @@ void BulletMLRunnerImpl::calcAccelX(double vertical, int term,
     finalSpd = vertical;
   }
 
-  auto_ptr_copy(accelx_, new LinearFunc<int, double>(actTurn_, finalTurn,
-                                                     firstSpd, finalSpd));
+  accelx_ = std::make_unique<LinearFunc<int, double>>(actTurn_, finalTurn,
+                                                      firstSpd, finalSpd);
 }
 
 void BulletMLRunnerImpl::runVanish() {

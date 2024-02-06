@@ -88,7 +88,7 @@ class BulletMLNode : public TreeNode<BulletMLNode> {
   Name name_;
   Type type_;
   int refID_;
-  std::auto_ptr<Number> val_;
+  std::unique_ptr<Number> val_;
 };
 
 /*

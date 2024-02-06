@@ -2,8 +2,6 @@
 #include "calc.h"
 #include "bulletmlerror.h"
 
-#include "auto_ptr_fix.h"
-
 #include <iostream>
 #include <algorithm>
 #include <functional>
@@ -85,9 +83,7 @@ BulletMLNode::BulletMLNode(const std::string& name)
 
 BulletMLNode::~BulletMLNode() {}
 
-void BulletMLNode::setValue(const std::string& val) {
-  auto_ptr_copy(val_, calc(val));
-}
+void BulletMLNode::setValue(const std::string& val) { val_ = calc(val); }
 
 void BulletMLNode::dump() {
 #if 0
