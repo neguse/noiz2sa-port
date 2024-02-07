@@ -1,4 +1,4 @@
-/** @mainpage
+ï»¿/** @mainpage
 
 <b> TinyXml </b>
 
@@ -39,7 +39,7 @@ string class.
 
 <b> What it doesn't do. </b>
 
-It doesn’t parse or use DTDs (Document Type Definitions) or XSL’s 
+It doesnâ€™t parse or use DTDs (Document Type Definitions) or XSLâ€™s 
 (eXtensible Stylesheet Language.) It is limited to the ASCII 
 character set. There are other parsers out there (check out 
 www.sourceforge.org, search for XML) that are much more fully 
@@ -62,7 +62,7 @@ included soon. Namely:
 	&lt;	<
 	&gt;	>
 	&quot;	"
-	&apos;	‘
+	&apos;	â€˜
 @endverbatim
 
 <b> Using and Installing </b>
@@ -112,7 +112,7 @@ component of say MedXml (adding DTDs) and LargeXml( adding XSL.) :-)
 
 An example is probably the best way to go. Take:
 @verbatim
-	<?xml version="1.0" standalone=‘no’>
+	<?xml version="1.0" standalone=â€˜noâ€™>
 	<?-- Our to do list data -->
 	<ToDo>
 		<Item priority="1"> Go to the <bold>Toy store!</bold></Item>
@@ -120,17 +120,17 @@ An example is probably the best way to go. Take:
 	</ToDo>
 @endverbatim
 
-It’s not much of a To Do list, but it will do. To read this file 
+Itâ€™s not much of a To Do list, but it will do. To read this file 
 (say "demo.xml") you would create a document, and parse it in:
 @verbatim
 	TiXmlDocument doc( "demo.xml" );
 	doc.LoadFile();
 @endverbatim
 
-And it’s ready to go. Now let’s look at some lines and how they 
+And itâ€™s ready to go. Now letâ€™s look at some lines and how they 
 relate to the DOM.
 
-<?xml version="1.0" standalone=‘no’>
+<?xml version="1.0" standalone=â€˜noâ€™>
 
 	The first line is a declaration, and gets turned into the
 	TiXmlDeclaration class. It will be the first child of the
@@ -138,7 +138,7 @@ relate to the DOM.
 	
 	This is the only directive/special tag parsed by by TinyXml.
 	Generally directive targs are stored in TiXmlUnknown so the 
-	commands won’t be lost when it is saved back to disk.
+	commands wonâ€™t be lost when it is saved back to disk.
 
 <?-- Our to do list data -->
 
@@ -153,13 +153,13 @@ relate to the DOM.
 <Item priority="1"> 
 
 	Creates another TiXmlElement which is a child of the "ToDo" element. 
-	This element has 1 attribute, with the name ‘priority’ and the value 
-	‘1’.
+	This element has 1 attribute, with the name â€˜priorityâ€™ and the value 
+	â€˜1â€™.
 
 Go to the 
 
 	A TiXmlText. This is a leaf node and cannot contain other nodes. 
-	It is a child of the ‘Item" Element.
+	It is a child of the â€˜Item" Element.
 
 <bold>
 	
@@ -170,7 +170,7 @@ Etc.
 Looking at the entire object tree, you end up with:
 @verbatim
 TiXmlDocument				"demo.xml"
-	TiXmlDeclaration		"version='1.0'" "standalone=‘no’"
+	TiXmlDeclaration		"version='1.0'" "standalone=â€˜noâ€™"
 	TiXmlComment			" Our to do list data"
 	TiXmlElement			"ToDo"
 		TiXmlElement		"Item"		Attribtutes: priority = 1
@@ -227,11 +227,11 @@ distribution.
 The World Wide Web Consortium is the definitive standard body for 
 XML, and there web pages contain huge amounts of information. I also 
 recommend "XML Pocket Reference" by Robert Eckstein and published by 
-O’Reilly.
+Oâ€™Reilly.
 
 <b> Contact Me: </b>
 
-I’d appreciates your suggestions, and would love to know if you 
+Iâ€™d appreciates your suggestions, and would love to know if you 
 use TinyXml. I hope you enjoy it and find it useful.
 
 Lee Thomason
