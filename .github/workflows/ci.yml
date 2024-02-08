@@ -36,7 +36,7 @@ jobs:
           cd build
           ninja
           cd ..
-          cp build/noiz2sa.* web/
+          mkdir web && cp build/noiz2sa.* web/
 
       - uses: actions/upload-pages-artifact@v1
         with:
